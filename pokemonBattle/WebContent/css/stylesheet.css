@@ -101,6 +101,11 @@
         left: 22px;
     }
     
+    #your-score {
+    	top: 350px;
+    	left: 2px;
+    }
+    
     .user-attack-img {
         width: 100px;
         top: 95px;

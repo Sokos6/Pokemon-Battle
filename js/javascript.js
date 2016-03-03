@@ -65,27 +65,27 @@ var cpuPokemon;
 var userPokemon;
 
 var cpuTurn = {
-    play: function() {
+    play: function () {
         var randomMove = Math.floor(Math.random() * 4);
         var currentCPUMove = cpuPokemon.moves[randomMove];
 
-        var setUpCPUField = function() {
+        var setUpCPUField = function () {
             $("#chat-text").text("What will " + cpuPokemon.name + " do?");
             prepareToAttack();
         };
 
-        var prepareToAttack = function() {
+        var prepareToAttack = function () {
             $("#pikachu-img").animate({
                 top: "-=25",
-            }, 200, function() {
+            }, 200, function () {
                 $("#pikachu-img").animate({
                     top: "+=25",
                 }, 200)
             });
             getAccuracy();
         };
-    
-        var getAccuracy = function() {
+
+        var getAccuracy = function () {
             var setAccuracy = Math.random();
             if (setAccuracy <= currentCPUMove.accuracy) {
                 $("#chat-text").text(cpuPokemon.name + " used " + currentCPUMove.name + "!");
@@ -96,24 +96,24 @@ var cpuTurn = {
                 setTimeout(loop, 1500);
             }
         };
-        
-        var getMoveType = function() {
+
+        var getMoveType = function () {
             showMoveAnimation();
-            
-            if(currentCPUMove.type == "Attack") {
+
+            if (currentCPUMove.type == "Attack") {
                 setTimeout(attackingMove, 1500);
             } else {
                 setTimeout(defensiveMove, 1500);
             }
         };
-        
-        var showMoveAnimation = function() {
+
+        var showMoveAnimation = function () {
             $("#attack-img").addClass("cpu-attack-img");
             $("#attack-img").removeClass("hide");
             $("#attack-img").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100);
         };
-        
-        var attackingMove = function() {
+
+        var attackingMove = function () {
             $("#attack-img").addClass("hide");
             $("#attack-img").removeClass("cpu-attack-img");
             if (!cpuPokemon.effect) {
@@ -126,50 +126,52 @@ var cpuTurn = {
             currentState = playerTurn;
             loop();
         };
-        
-        var defensiveMove = function() {
+
+        var defensiveMove = function () {
             $("#attack-img").addClass("hide");
             $("#attack-img").removeClass("cpu-attack-img");
             userPokemon.effect = currentCPUMove.power;
             currentState = playerTurn;
             loop();
         };
-        
+
         setUpCPUField();
     }
 };
 
 var playerTurn = {
-    play: function() {
+    play: function () {
         var currentUserMove;
-        
-        var setUpUserField = function(){
+
+        var setUpUserField = function () {
             var moveButtons = ["#move1-text", "#move2-text", "#move3-text", "#move4-text"];
             
+
             $("#user-buttons").removeClass("hide");
             $("#chat-text").text("What will " + userPokemon.name + " do?");
-            
+
             for (var i = moveButtons.length - 1; i >= 0; i--) {
                 $(moveButtons[i]).text(userPokemon.moves[i].name);
             };
-        };
-        
-        var prepareToAttack = function() {
-            $("#user-buttons").addClass("hide");
             
+        };
+
+        var prepareToAttack = function () {
+            $("#user-buttons").addClass("hide");
+
             $("#charmander-img").animate({
                 top: "-=25",
-            }, 200, function() {
+            }, 200, function () {
                 $("#charmander-img").animate({
                     top: "+=25",
                 }, 200)
             });
             getAccuracy();
         };
-        
-        var getAccuracy = function() {
+
+        var getAccuracy = function () {
             var setAccuracy = Math.random();
-            
+
             if (setAccuracy <= currentUserMove.accuracy) {
                 $("#chat-text").text(userPokemon.name + " used " + currentUserMove.name + "!");
                 getMoveType();
@@ -179,24 +181,24 @@ var playerTurn = {
                 setTimeout(loop, 1500);
             }
         };
-        
-        var getMoveType = function() {
+
+        var getMoveType = function () {
             showMoveAnimation();
-            
-            if(currentUserMove.type == "Attack") {
+
+            if (currentUserMove.type == "Attack") {
                 setTimeout(attackingMove, 1500);
             } else {
                 setTimeout(defensiveMove, 1500);
             }
         };
-        
-        var showMoveAnimation = function() {
+
+        var showMoveAnimation = function () {
             $("#attack-img").addClass("user-attack-img");
             $("#attack-img").removeClass("hide");
             $("#attack-img").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100);
         };
-        
-        var attackingMove = function() {
+
+        var attackingMove = function () {
             $("#attack-img").addClass("hide");
             $("#attack-img").removeClass("user-attack-img");
             if (!userPokemon.effect) {
@@ -209,31 +211,38 @@ var playerTurn = {
             currentState = cpuTurn;
             loop();
         };
-        
-        var defensiveMove = function() {
+
+        var defensiveMove = function () {
             $("#attack-img").addClass("hide");
             $("#attack-img").removeClass("user-attack-img");
             cpuPokemon.effect = currentUserMove.power;
             currentState = cpuTurn;
             loop();
         };
-        
-        $("#move1-button, #move2-button, #move3-button, #move4-button").unbind().click(function() {
+
+        $("#move1-button, #move2-button, #move3-button, #move4-button").unbind().click(function () {
             var move = $(this).attr("value");
             currentUserMove = userPokemon.moves[move];
             prepareToAttack();
         });
-        
-        
-        
+
+
+
         setUpUserField();
     }
 };
 
-var loop = function() {
+var loop = function () {
     if (cpuPokemon.health <= 0 || userPokemon.health <= 0) {
         $("#game-over").removeClass("hide");
+        if (cpuPokemon.health <= 0) {
+            var score = 0;
+            score =+ 5;
+            
+            console.log("Your score is " + score);
+        }
         console.log("Game Over");
+        currentState.play();
     } else {
         currentState.play();
     }
