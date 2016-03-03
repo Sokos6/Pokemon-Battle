@@ -37,14 +37,14 @@ var pikachu = {
     moves: [{
             name: "Thunder Shock",
             type: "Attack",
-            power: 25,
-            accuracy: .60
+            power: 10,
+            accuracy: .90
     },
         {
             name: "Thunder Wave",
             type: "Attack",
-            power: 10,
-            accuracy: .90
+            power: 25,
+            accuracy: .60
     },
         {
             name: "Tail Whip",
@@ -82,8 +82,60 @@ var cpuTurn = {
                     top: "+=25",
                 }, 200)
             });
+            getAccuracy();
         };
     
+        var getAccuracy = function() {
+            var setAccuracy = Math.random();
+            if (setAccuracy <= currentCPUMove.accuracy) {
+                $("#chat-text").text(cpuPokemon.name + " used " + currentCPUMove.name + "!");
+                getMoveType();
+            } else {
+                $("#chat-text").text(cpuPokemon.name + " missed with " + currentCPUMove.name + "!");
+                currentState = playerTurn;
+                setTimeout(loop, 1500);
+            }
+        };
+        
+        var getMoveType = function() {
+            showMoveAnimation();
+            
+            if(currentCPUMove.type == "Attack") {
+                setTimeout(attackingMove, 1500);
+            } else {
+                setTimeout(defensiveMove, 1500);
+            }
+        };
+        
+        var showMoveAnimation = function() {
+            $("#attack-img").addClass("cpu-attack-img");
+            $("#attack-img").removeClass("hide");
+            $("#attack-img").fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100).fadeIn(100).fadeOut(100);
+        }
+        
+        var attackingMove = function() {
+            $("#attack-img").addClass("hide");
+            $("#attack-img").removeClass("cpu-attack-img");
+            if (!cpuPokemon.effect) {
+                userPokemon.health -= currentCPUMove.power
+            } else {
+                userPokemon.health -= (currentCPUMove.power) - (currentCPUMove.power * cpuPokemon.effect);
+                cpuPokemon.effect = null;
+            }
+            $("#user-health-bar").css("width", userPokemon.health + "%");
+            currentState = playerTurn;
+            loop();
+        };
+        
+        var defensiveMove = function() {
+            $("#attack-img").addClass("hide");
+            $("#attack-img").removeClass("cpu-attack-img");
+            userPokemon.effect = currentCPUMove.power;
+            currentState = playerTurn;
+            loop();
+        };
+        
+        
         
         setUpCPUField();
     }
