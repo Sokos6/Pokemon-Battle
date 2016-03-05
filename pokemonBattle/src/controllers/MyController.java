@@ -1,5 +1,6 @@
 package controllers;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,9 @@ public class MyController {
 	@RequestMapping(value="getScores")
 	public List<Scores> getScores() {
 		System.out.println(pokemonDAO.getScores().size());
-		return pokemonDAO.getScores();
+		List<Scores> score = pokemonDAO.getScores();
+		Collections.sort(score);
+		return score;
 	}
 	
 	@ResponseBody

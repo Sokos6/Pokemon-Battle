@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Scores {
+public class Scores implements Comparable<Scores> {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class Scores {
 	private String name;
 
 	@Column(name = "points")
-	private int score;
+	private Integer score;
 
 	private int time;
 
@@ -50,5 +50,10 @@ public class Scores {
 
 	public void setTime(int time) {
 		this.time = time;
+	}
+
+	@Override
+	public int compareTo(Scores o) {
+		return (score.compareTo(o.getScore()) * -1);
 	}
 }

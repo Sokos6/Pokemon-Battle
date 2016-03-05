@@ -34,13 +34,13 @@ var pikachu = {
 	moves : [ {
 		name : "Thunder Shock",
 		type : "Attack",
-		power : 40,
+		power : 70,
 		accuracy : .90
 	}, {
 		name : "Thunder Wave",
 		type : "Attack",
-		power : 25,
-		accuracy : .60
+		power : 70,
+		accuracy : .90
 	}, {
 		name : "Tail Whip",
 		type : "Defense",
@@ -55,6 +55,7 @@ var pikachu = {
 };
 
 var score = 0;
+var gameTime = 0;
 
 var currentState;
 var cpuPokemon;
@@ -250,13 +251,18 @@ var loop = function() {
 		init();
 
 	} else if (userPokemon.health <= 0) {
+		startPause();
 		$("#game-over").removeClass("hide");
 		$("#your-score").removeClass("hide").text("Your Score is " + score);
+		
 		var person = prompt("Please enter your initials");
-		createScore({name: person, score: score, time: 5});
+		createScore({name: person, score: score, time: time});
+		$("#topscores").removeClass("hide");
+        getScore(printScores);
 	    
 		console.log("Your score is " + score);
-		
+		console.log(time);
+		gameTime += time;
 	}
 
 	else {
@@ -265,6 +271,9 @@ var loop = function() {
 };
 
 var init = function() {
+	if(!time) {
+		startPause();
+	}		
 	cpuPokemon = pikachu;
 	userPokemon = charmander;
 	if (cpuPokemon.health <= 0) {
@@ -291,7 +300,34 @@ function createScore(score) {
 	xhr.onreadystatechange = function() {
 		console.log(xhr.status);
 	}
-	xhr.send(JSON.stringify(score));
+	xhr.send(score);
+}
+
+function getScore(func) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", "rest/getScores");
+	
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4 && xhr.status < 400) {
+			console.log(xhr.responseText);
+	        func(JSON.parse(xhr.responseText));
+	        
+	    }
+	}
+		xhr.send(null);
+}
+
+function printScores(response) {
+	var scoreList = []; 
+	
+	for (var i = 0; i < response.length; i++) {
+		scoreList.push(response[i].score);
+		
+		
+	}
+	$("#topscores").html("Top scores " + "<br>" + (scoreList[0]) + "<br>" + (scoreList[1]) + "<br>" + (scoreList[2]) + "<br>" + (scoreList[3]) + "<br>" + (scoreList[4]));
+	console.log(scoreList);
+	
 }
 
 

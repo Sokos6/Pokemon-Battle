@@ -235,6 +235,8 @@ var playerTurn = {
 var loop = function () {
     if (cpuPokemon.health <= 0 || userPokemon.health <= 0) {
         $("#game-over").removeClass("hide");
+         $("#scores").removeClass("hide");
+            $("#scores").text("Top scores " + score);
         if (cpuPokemon.health <= 0) {
             var score = 0;
             score =+ 5;
